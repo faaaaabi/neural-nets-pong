@@ -1,0 +1,2 @@
+export const TOGGLE_DATA_COLLECTION = 35;
+export const TOGGLE_NETWORK_ACTIVATION = 45;
