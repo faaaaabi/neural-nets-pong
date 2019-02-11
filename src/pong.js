@@ -9,8 +9,10 @@ class Pong {
     ballSpeedX = 7,
     ballSpeedY = 6,
     padHeight = 100,
+    initPadWidth = 10,
+    initPadPosX = 10,
     initPadPosY = 250,
-    framesPerSecond = 30
+    initBallSize = 10
   ) {
     this.canvas = pongCanvas;
     this.CanvasContext = pongCanvasContext;
@@ -20,9 +22,11 @@ class Pong {
     this.ballPositionY = ballStartPositionY;
     this.ballSpeedX = ballSpeedX;
     this.ballSpeedY = ballSpeedY;
-    this.framesPerSecond = framesPerSecond;
     this.padHeight = padHeight;
+    this.padWidth = initPadWidth;
+    this.padPosX = initPadPosX;
     this.padPosY = initPadPosY;
+    this.ballSize = initBallSize;
     this.animation = null;
     window.requestAnimationFrame(this._drawEverything);
   }
@@ -59,8 +63,16 @@ class Pong {
   _moveEverything = () => {
     this.ballPositionX = this.ballPositionX + this.ballSpeedX;
     this.ballPositionY = this.ballPositionY + this.ballSpeedY;
+    console.log(this.ballPositionX, this.ballPositionY, this.padPosY);
 
     if (this.ballPositionX < 0) {
+      this.ballSpeedX = -this.ballSpeedX;
+    }
+    if (
+      this.ballPositionX < this.padPosX + this.ballSize + this.padWidth &&
+      (this.ballPositionY - this.padHeight / 2 > this.padPosY ||
+        this.ballPositionY + this.padHeight / 2 > this.padPosY )
+    ) {
       this.ballSpeedX = -this.ballSpeedX;
     }
     if (this.ballPositionX > this.canvas.width) {
@@ -84,12 +96,18 @@ class Pong {
       this.backgroundColor
     );
     // Pad
-    this._colorRect(10, this.padPosY, 10, this.padHeight, this.objectColors);
+    this._colorRect(
+      this.padPosX,
+      this.padPosY,
+      this.padWidth,
+      this.padHeight,
+      this.objectColors
+    );
     // Ball
     this._colorCircle(
       this.ballPositionX,
       this.ballPositionY,
-      10,
+      this.ballSize,
       this.objectColors
     );
   };
