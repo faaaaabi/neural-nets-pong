@@ -10,7 +10,7 @@ class Pong {
     ballSpeedY = 6,
     padHeight = 100,
     initPadWidth = 10,
-    initPadPosX = 10,
+    initPadPosX = 30,
     initPadPosY = 250,
     initBallSize = 10
   ) {
@@ -60,28 +60,38 @@ class Pong {
     this.animation = window.requestAnimationFrame(this._animate);
   };
 
+  _restart = () => {
+    this.ballPositionX = this.canvas.width / 2
+    this.ballPositionY = this.canvas.height / 2
+  }
+
   _moveEverything = () => {
     this.ballPositionX = this.ballPositionX + this.ballSpeedX;
     this.ballPositionY = this.ballPositionY + this.ballSpeedY;
-    console.log(this.ballPositionX, this.ballPositionY, this.padPosY);
-
-    if (this.ballPositionX < 0) {
-      this.ballSpeedX = -this.ballSpeedX;
-    }
+    /*
+     * Pad/ball collision detection
+     */
     if (
-      this.ballPositionX < this.padPosX + this.ballSize + this.padWidth &&
-      (this.ballPositionY - this.padHeight / 2 > this.padPosY ||
-        this.ballPositionY + this.padHeight / 2 > this.padPosY )
+      !(this.ballPositionY - this.ballSize < 0 + this.padPosY) &&
+      !(this.ballPositionY + this.ballSize > this.padPosY + this.padHeight)
     ) {
+      if (this.ballPositionX - this.ballSize + 1 < this.padPosX + this.padWidth) {
+        this.ballSpeedX = -this.ballSpeedX;
+      }
+    }
+    /*
+     * Ball/wall collision detection
+     */
+    if (this.ballPositionX - this.ballSize < 0) {
       this.ballSpeedX = -this.ballSpeedX;
     }
-    if (this.ballPositionX > this.canvas.width) {
+    if (this.ballPositionX + this.ballSize > this.canvas.width) {
       this.ballSpeedX = -this.ballSpeedX;
     }
-    if (this.ballPositionY < 0) {
+    if (this.ballPositionY - this.ballSize < 0) {
       this.ballSpeedY = -this.ballSpeedY;
     }
-    if (this.ballPositionY > this.canvas.height) {
+    if (this.ballPositionY + this.ballSize > this.canvas.height) {
       this.ballSpeedY = -this.ballSpeedY;
     }
   };

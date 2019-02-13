@@ -39,9 +39,9 @@ const collectTrainingData = (data, pong) => {
       ballPositionY,
       padPosY
     } = pong.getElementPositions();
-    const ballPositionXNorm = (ballPositionX + 10) / 610;
-    const ballPositionYNorm = (ballPositionY + 2) / 402;
-    const currentPadPosition = padPosY / 400;
+    const ballPositionXNorm = ballPositionX / pongCanvas.width;
+    const ballPositionYNorm = ballPositionY / pongCanvas.height;
+    const currentPadPosition = padPosY / pongCanvas.height;
 
     data.push({
       input: [ballPositionXNorm, ballPositionYNorm],
@@ -57,10 +57,12 @@ const trainNetwork = (network, data) => {
 
 const activateNetWork = (network, pong) => {
   return setInterval(() => {
-    const ballxNorm = (pong.getElementPositions().ballPositionX + 10) / 610;
-    const ballyNorm = (pong.getElementPositions().ballPositionY + 2) / 402;
+    const ballxNorm =
+      pong.getElementPositions().ballPositionX / pongCanvas.width;
+    const ballyNorm =
+      pong.getElementPositions().ballPositionY / pongCanvas.height;
 
-    const activation = network.run([ballxNorm, ballyNorm]) * 400;
+    const activation = network.run([ballxNorm, ballyNorm]) * pongCanvas.height;
     pong.setPadPosition(activation);
   }, 50);
 };
