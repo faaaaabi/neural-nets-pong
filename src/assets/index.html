@@ -2,10 +2,26 @@
 <html>
   <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-    <link href="css/main.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet" />
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
   <body>
     <canvas height="400" width="600" id="pongCanvas"></canvas>
+    <p>
+      Press[#] to start/stop collecting training data (when stopped the neural
+      net will be trained with the collected training data)
+    </p>
+    <p>Press[-] to start/stop the activation of the network</p>
+    <p>
+      <span class="boldTypo">Datapoints:</span> <span id="numDatapoints"></span>
+    </p>
+    <p>
+      <span class="boldTypo">Network activation:</span>
+      <span id="networkActivation"></span>
+    </p>
+    <p>
+      <span class="boldTypo">Training status:</span>
+      <span id="trainStatus"></span>
+    </p>
   </body>
 </html>

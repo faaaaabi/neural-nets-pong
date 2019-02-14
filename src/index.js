@@ -13,6 +13,12 @@ const pongCanvas = document.getElementById("pongCanvas");
 const pongCanvasContext = pongCanvas.getContext("2d");
 const pongInstance = new Pong(pongCanvas, pongCanvasContext, "#3a5b63");
 
+const numDataPointsElement = document.getElementById("numDatapoints");
+const networkActivationElement = document.getElementById("networkActivation");
+const networkTrainStatElement = document.getElementById("trainStatus");
+numDataPointsElement.textContent = 0;
+networkActivationElement.textContent = "off";
+
 pongInstance.startAnimation();
 
 /*
@@ -26,13 +32,14 @@ const brainInstance = new brain.NeuralNetwork({
   hiddenLayers: [3, 2],
   outputSize: 1,
   activation: "sigmoid",
-  learningRate: 0.01
+  learningRate: 0.01,
+  decayRate: 0.999
 });
 
 /*
  * Neural net helper functions
  */
-const collectTrainingData = (data, pong) => {
+const collectTrainingData = (data, pong, callback) => {
   return setInterval(() => {
     const {
       ballPositionX,
@@ -47,12 +54,18 @@ const collectTrainingData = (data, pong) => {
       input: [ballPositionXNorm, ballPositionYNorm],
       output: [currentPadPosition]
     });
-  }, 50);
+
+    callback(data.length);
+  }, 100);
 };
 
-const trainNetwork = (network, data) => {
+const trainNetwork = async (network, data, trainCallback) => {
   console.log("training net");
-  network.train(data);
+  network.trainAsync(data, {
+    iterations: 10000,
+    callback: trainCallback,
+    callbackPeriod: 100
+  });
 };
 
 const activateNetWork = (network, pong) => {
@@ -64,7 +77,7 @@ const activateNetWork = (network, pong) => {
 
     const activation = network.run([ballxNorm, ballyNorm]) * pongCanvas.height;
     pong.setPadPosition(activation);
-  }, 50);
+  }, 20);
 };
 
 /*
@@ -80,25 +93,38 @@ document.addEventListener("keypress", event => {
   switch (getKey(event)) {
     case TOGGLE_DATA_COLLECTION:
       if (!trainInterval) {
-        console.log("started collecting data");
-        trainInterval = collectTrainingData(dataPoints, pongInstance);
+        console.log("Started collecting data");
+        trainInterval = collectTrainingData(
+          dataPoints,
+          pongInstance,
+          dataLength => {
+            numDataPointsElement.textContent = dataLength;
+          }
+        );
       } else {
-        console.log("stopped collecting data");
+        console.log("Stopped collecting data");
         clearInterval(trainInterval);
         trainInterval = false;
 
         console.log("Train network");
-        trainNetwork(brainInstance, dataPoints);
+        trainNetwork(brainInstance, dataPoints, trainData => {
+          networkTrainStatElement.textContent = `
+          Iteration: ${trainData.iterations}, 
+          error: ${trainData.error}
+          `;
+        });
       }
       break;
     case TOGGLE_NETWORK_ACTIVATION:
       if (!activationInterval) {
-        console.log("started activation");
+        console.log("Started activation");
         activationInterval = activateNetWork(brainInstance, pongInstance);
+        networkActivationElement.textContent = "on";
       } else {
-        console.log("stopped activation");
+        console.log("Stopped activation");
         clearInterval(activationInterval);
         activationInterval = false;
+        networkActivationElement.textContent = "off";
       }
       break;
     default:
