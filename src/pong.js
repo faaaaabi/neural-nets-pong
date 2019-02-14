@@ -61,9 +61,9 @@ class Pong {
   };
 
   _restart = () => {
-    this.ballPositionX = this.canvas.width / 2
-    this.ballPositionY = this.canvas.height / 2
-  }
+    this.ballPositionX = this.canvas.width / 2;
+    this.ballPositionY = this.canvas.height / 2;
+  };
 
   _moveEverything = () => {
     this.ballPositionX = this.ballPositionX + this.ballSpeedX;
@@ -72,12 +72,17 @@ class Pong {
      * Pad/ball collision detection
      */
     if (
-      !(this.ballPositionY - this.ballSize < 0 + this.padPosY) &&
-      !(this.ballPositionY + this.ballSize > this.padPosY + this.padHeight)
+      this._rectCircleColliding(
+        { x: this.ballPositionX, y: this.ballPositionY, r: this.ballSize },
+        {
+          x: this.padPosX,
+          y: this.padPosY,
+          w: this.padWidth,
+          h: this.padHeight
+        }
+      )
     ) {
-      if (this.ballPositionX - this.ballSize + 1 < this.padPosX + this.padWidth) {
-        this.ballSpeedX = -this.ballSpeedX;
-      }
+      this.ballSpeedX = -this.ballSpeedX;
     }
     /*
      * Ball/wall collision detection
@@ -132,6 +137,29 @@ class Pong {
   _colorRect = (leftX, topY, width, height, drawColor) => {
     this.CanvasContext.fillStyle = drawColor;
     this.CanvasContext.fillRect(leftX, topY, width, height);
+  };
+
+  _rectCircleColliding = (circle, rect) => {
+    const distX = Math.abs(circle.x - rect.x - rect.w / 2);
+    const distY = Math.abs(circle.y - rect.y - rect.h / 2);
+
+    if (distX > rect.w / 2 + circle.r) {
+      return false;
+    }
+    if (distY > rect.h / 2 + circle.r) {
+      return false;
+    }
+
+    if (distX <= rect.w / 2) {
+      return true;
+    }
+    if (distY <= rect.h / 2) {
+      return true;
+    }
+
+    const dx = distX - rect.w / 2;
+    const dy = distY - rect.h / 2;
+    return dx * dx + dy * dy <= circle.r * circle.r;
   };
 }
 
