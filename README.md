@@ -1,5 +1,5 @@
 # Neural net playing pong
-Train a neural net to play pong with [brain.js](https://github.com/BrainJS/)
+Train a neural net to play pong with [brain.js](https://github.com/BrainJS/brain.js)
 
 ## Usage
 
