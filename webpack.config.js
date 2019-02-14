@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   module: {
@@ -26,6 +27,12 @@ module.exports = {
       filename: "index.html",
       title: "AI Pong",
       template: "src/assets/index.html"
-    })
+    }),
+    new CopyWebpackPlugin([
+      {
+        from: "src/assets/css/main.css",
+        to: "css/main.css"
+      }
+    ])
   ]
 };

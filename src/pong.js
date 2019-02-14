@@ -2,7 +2,7 @@ class Pong {
   constructor(
     pongCanvas,
     pongCanvasContext,
-    backgroundColor = "#3a5b63",
+    backgroundColor = "#000000",
     objectColors = "#FFFFFF",
     ballStartPositionX = 70,
     ballStartPositionY = 70,

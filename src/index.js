@@ -11,7 +11,7 @@ import {
  */
 const pongCanvas = document.getElementById("pongCanvas");
 const pongCanvasContext = pongCanvas.getContext("2d");
-const pongInstance = new Pong(pongCanvas, pongCanvasContext);
+const pongInstance = new Pong(pongCanvas, pongCanvasContext, "#3a5b63");
 
 pongInstance.startAnimation();
 
